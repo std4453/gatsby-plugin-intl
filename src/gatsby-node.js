@@ -49,6 +49,7 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
     languages = ["en"],
     defaultLanguage = "en",
     redirect = false,
+    ignores = [],
   } = pluginOptions
 
   const getMessages = (path, language) => {
@@ -96,6 +97,10 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
   createPage(newPage)
 
   languages.forEach(language => {
+    for (const ignore of ignores) {
+      const regexp = new RegExp(ignore);
+      if (regexp.test(localPage.path)) return;
+    }
     const localePage = generatePage(true, language)
     const regexp = new RegExp("/404/?$")
     if (regexp.test(localePage.path)) {
